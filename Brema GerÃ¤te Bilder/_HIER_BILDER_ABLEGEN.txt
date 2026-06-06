@@ -1,0 +1,1 @@
+BREMA Produktbilder hier ablegen (Dateinamen siehe Bilder-Liste.csv).
