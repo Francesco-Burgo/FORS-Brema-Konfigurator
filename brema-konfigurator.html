@@ -3380,8 +3380,6 @@ function buildUI(){
   // Buttons
   $("#btnCalc").addEventListener("click",runConfigurator);
   $("#btnReset").addEventListener("click",resetAll);
-  $("#btnSummaryCopy").addEventListener("click",copySummary);
-  $("#btnRequest").addEventListener("click",openRequest);
   $("#btnReport").addEventListener("click",openReport);
   $("#btnShowCompare").addEventListener("click",showCompare);
   $("#btnClearCompare").addEventListener("click",clearCompare);
@@ -3591,7 +3589,6 @@ function renderResults(list,demand){
 
   // Button-Events binden
   wrap.querySelectorAll("[data-cmp]").forEach(b=>b.addEventListener("click",()=>toggleCompare(parseInt(b.dataset.cmp))));
-  wrap.querySelectorAll("[data-req]").forEach(b=>b.addEventListener("click",openRequest));
 }
 
 function cardHtml(m,s,demand,rank,listMode){
@@ -3647,7 +3644,6 @@ function cardHtml(m,s,demand,rank,listMode){
         ${dataLink}
         ${prodLink}
         <button class="btn btn-ghost btn-sm cmp-btn ${inCmp?'in':''}" data-cmp="${idx}">${inCmp?'✓ Im Vergleich':'Vergleichen'}</button>
-        <button class="btn btn-ghost btn-sm" data-req="${idx}">Anfrage</button>
       </div>
     </div>
   </article>`;
