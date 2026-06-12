@@ -3344,7 +3344,6 @@ function applyStateToUI(){
   $("#fCooling").value=state.cooling||""; $("#fBuild").value=state.build||"";
   $("#fMinBin").value=state.minBin||""; $("#fBudget").value=state.budget||"";
   $("#fSearch").value=state.search||""; $("#fActiveOnly").checked=state.activeOnly!==false;
-  Object.keys(state.checks||{}).forEach(i=>{const el=$(`[data-check="${i}"]`);if(el)el.checked=!!state.checks[i];});
   syncCompareUI();
   updateSummary();
 }
