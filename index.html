@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="FORS Brema Eismaschinen Konfigurator – das passende BREMA Gerät in wenigen Schritten finden.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%8A%3C/text%3E%3C/svg%3E">
 <title>FORS Brema Eismaschinen Konfigurator</title>
 <style>
 /* ============================================================
@@ -144,9 +147,6 @@ input[type=number]:focus,input[type=text]:focus,select:focus{
 .filter-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
 .toggle-row{display:flex;align-items:center;gap:10px;margin-top:4px;}
 .toggle-row input{width:auto;}
-.checklist{margin-top:6px;display:grid;grid-template-columns:repeat(2,1fr);gap:8px 18px;}
-.checklist label{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#3c4d5c;cursor:pointer;}
-.checklist input{width:auto;margin-top:3px;}
 
 /* buttons */
 .btn{
@@ -360,7 +360,6 @@ input[type=number]:focus,input[type=text]:focus,select:focus{
   .card{padding:18px 16px;}
   .opt-grid,.opt-grid.cols-3{grid-template-columns:repeat(2,1fr);}
   .filter-grid{grid-template-columns:1fr;}
-  .checklist{grid-template-columns:1fr;}
   .cards-grid,.cards-list{grid-template-columns:1fr;}
   .proto-tag{display:none;}
 }
@@ -476,15 +475,6 @@ input[type=number]:focus,input[type=text]:focus,select:focus{
       </div>
     </section>
 
-    <!-- Technische Prüfung -->
-    <section class="card">
-      <div class="step-head">
-        <div class="step-num">i</div>
-        <div><h2>Technische Prüfung</h2><div class="sub">Checkliste – keine harten Filter, nur Hinweise für die Installation.</div></div>
-      </div>
-      <div class="checklist" id="checklist"></div>
-    </section>
-
     <!-- Action bar -->
     <section class="card no-print">
       <div class="btn-bar">
@@ -551,22 +541,6 @@ input[type=number]:focus,input[type=text]:focus,select:focus{
   </div>
 </div>
 
-<!-- ============ REQUEST MODAL ============ -->
-<div class="modal no-print" id="reqModal">
-  <div class="modal-box" style="max-width:680px;">
-    <div class="modal-head">
-      <h2>Anfrage vorbereiten</h2>
-      <button class="modal-close" data-close>&times;</button>
-    </div>
-    <div class="modal-body">
-      <textarea class="copybox" id="reqText" spellcheck="false"></textarea>
-      <div class="btn-bar" style="margin-top:14px;">
-        <button class="btn btn-primary" id="btnReqCopy">Anfrage kopieren</button>
-        <button class="btn btn-light" data-close>Schliessen</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- ============ REPORT (PRINT ONLY) ============ -->
 <div id="report"></div>
@@ -588,8 +562,7 @@ input[type=number]:focus,input[type=text]:focus,select:focus{
      8) Scoring / Bewertung
      9) Rendering der Karten
     10) Vergleich
-    11) Anfrage-Text
-    12) Beratungsbericht / Drucken
+    11) Beratungsbericht / Drucken
    ============================================================================ */
 
 /* ============================================================================
@@ -3234,18 +3207,6 @@ const ICE_OPTIONS = [
   {label:"B-Qube",                value:"B-Qube",     ico:"🧊"}
 ];
 
-const CHECK_ITEMS = [
-  "Wasseranschluss vorhanden / geprüft",
-  "Wasserablauf vorhanden / geprüft",
-  "Stromanschluss passend",
-  "Platzverhältnisse geprüft",
-  "Umgebungstemperatur geprüft",
-  "Luftzirkulation (luftgekühlte Geräte)",
-  "Wasserverbrauch (wassergekühlte Geräte)",
-  "Geräuschwert für Standort akzeptabel",
-  "Separater Vorratsbehälter (modulare Geräte)"
-];
-
 const LS_KEY = "fors_brema_konfig_v1";
 
 /* ============================================================================
@@ -3317,14 +3278,14 @@ async function copyText(text){
 const state = {
   area:"", amount:"", load:"Normal", ice:"auto",
   cooling:"", build:"", minBin:"", budget:"", search:"", activeOnly:true,
-  checks:{}, compare:[], lastResults:[]
+  compare:[], lastResults:[]
 };
 
 function saveState(){
   try{
     const s={area:state.area,amount:state.amount,load:state.load,ice:state.ice,
       cooling:state.cooling,build:state.build,minBin:state.minBin,budget:state.budget,
-      search:state.search,activeOnly:state.activeOnly,checks:state.checks,compare:state.compare};
+      search:state.search,activeOnly:state.activeOnly,compare:state.compare};
     localStorage.setItem(LS_KEY,JSON.stringify(s));
   }catch(e){/* localStorage evtl. blockiert – nicht kritisch */}
 }
@@ -3359,12 +3320,6 @@ function buildUI(){
     <div class="opt" data-ice="${o.value}"><span class="ico">${o.ico}</span>${escapeHtml(o.label)}</div>`).join("");
   ig.querySelectorAll(".opt").forEach(el=>el.addEventListener("click",()=>{state.ice=el.dataset.ice;syncIce();updateSummary();saveState();}));
 
-  // Checkliste
-  const cl=$("#checklist");
-  cl.innerHTML = CHECK_ITEMS.map((c,i)=>`
-    <label><input type="checkbox" data-check="${i}"> <span>${escapeHtml(c)}</span></label>`).join("");
-  cl.querySelectorAll("input").forEach(el=>el.addEventListener("change",()=>{state.checks[el.dataset.check]=el.checked;saveState();}));
-
   // Inputs
   $("#amountInput").addEventListener("input",e=>{state.amount=e.target.value;clearErr("amount");updateSummary();saveState();});
   $("#fCooling").addEventListener("change",e=>{state.cooling=e.target.value;updateSummary();saveState();});
@@ -3380,7 +3335,6 @@ function buildUI(){
   $("#btnReport").addEventListener("click",openReport);
   $("#btnShowCompare").addEventListener("click",showCompare);
   $("#btnClearCompare").addEventListener("click",clearCompare);
-  $("#btnReqCopy").addEventListener("click",()=>copyText($("#reqText").value));
   $$("[data-close]").forEach(b=>b.addEventListener("click",closeModals));
   $$(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)closeModals();}));
 }
@@ -3392,7 +3346,6 @@ function applyStateToUI(){
   $("#fCooling").value=state.cooling||""; $("#fBuild").value=state.build||"";
   $("#fMinBin").value=state.minBin||""; $("#fBudget").value=state.budget||"";
   $("#fSearch").value=state.search||""; $("#fActiveOnly").checked=state.activeOnly!==false;
-  Object.keys(state.checks||{}).forEach(i=>{const el=$(`[data-check="${i}"]`);if(el)el.checked=!!state.checks[i];});
   syncCompareUI();
   updateSummary();
 }
@@ -3708,57 +3661,9 @@ function showCompare(){
   $("#cmpModal").classList.add("show");
 }
 
-/* ============================================================================
-   11) ANFRAGE-TEXT
-   ============================================================================ */
-function offenePunkte(){
-  // offene Punkte = Checklisten-Items, die NICHT abgehakt sind
-  const open=CHECK_ITEMS.filter((c,i)=>!state.checks[i]);
-  return open.length?open:["Technische Prüfung vor Angebot durchführen"];
-}
-function buildRequestText(){
-  const demand=calcDemand();
-  const a=AREAS[state.area];
-  const tops=(state.lastResults||[]).filter(x=>x.s.isTop).slice(0,3);
-  const modelle=tops.length?tops.map((x,i)=>`${i+1}. ${x.m.modell} (Art. ${x.m.artikelnummer}) – ${x.m.eisproduktionKg24h||"?"} kg/24h, ${priceExklText(x.m)} exkl.`):["(noch keine Berechnung durchgeführt)"];
-  const budget = state.budget?`max. ${chfFmt.format(parseFloat(state.budget))} exkl. MwSt.`:"offen";
-  const ice = state.ice==="auto"?("Automatisch empfohlen"+(ICE_RECO[state.area]?" ("+ICE_RECO[state.area].join(", ")+")":"")):state.ice;
-  return `Hallo zusammen
-
-Bitte prüft folgende BREMA Empfehlung aus dem Konfigurator:
-
-Kunde:            [bitte ergänzen]
-Kontakt:          [bitte ergänzen]
-Einsatzbereich:   ${state.area||"–"}
-${a?a.sumK:"Menge"}: ${state.amount||"–"} ${a?a.einheit:""}
-Auslastung:       ${state.load} (Reserve ${demand?Math.round(demand.reserve*100):"–"} %)
-Berechneter Eisbedarf:        ${demand?demand.basis+" kg/24h":"–"}
-Empfohlene Maschinenleistung: ${demand?demand.reco+" kg/24h":"–"}
-Gewünschte Eisform:           ${ice}
-Kühlung:          ${state.cooling||"keine Vorgabe"}
-Bauart:           ${state.build||"keine Vorgabe"}
-Budget:           ${budget}
-
-Empfohlene Modelle:
-${modelle.join("\n")}
-
-Offene Punkte:
-${offenePunkte().map(p=>"- "+p).join("\n")}
-
-Bemerkung für Verkauf / Innendienst:
-[bitte ergänzen]
-
-Hinweis: Die Empfehlung ersetzt keine technische Prüfung vor Angebotserstellung.
-
-Freundliche Grüsse`;
-}
-function openRequest(){
-  $("#reqText").value=buildRequestText();
-  $("#reqModal").classList.add("show");
-}
 
 /* ============================================================================
-   12) ZUSAMMENFASSUNG + BERICHT + DRUCKEN
+   11) ZUSAMMENFASSUNG + BERICHT + DRUCKEN
    ============================================================================ */
 function updateSummary(){
   const a=AREAS[state.area];
@@ -3882,8 +3787,6 @@ function buildReport(){
   }
 
   html+=`
-  <h2>Technische Prüfung – offene Punkte</h2>
-  <ul class="rep-open">${offenePunkte().map(p=>`<li>${escapeHtml(p)}</li>`).join("")}</ul>
   <div class="rep-foot">Die Empfehlung ersetzt keine technische Prüfung vor Angebotserstellung. ·
   Erstellt mit dem FORS Brema Eismaschinen Konfigurator (interner Prototyp).</div>`;
 
@@ -3895,14 +3798,13 @@ function buildReport(){
    ============================================================================ */
 function resetAll(){
   Object.assign(state,{area:"",amount:"",load:"Normal",ice:"auto",cooling:"",build:"",
-    minBin:"",budget:"",search:"",activeOnly:true,checks:{},compare:[],lastResults:[]});
+    minBin:"",budget:"",search:"",activeOnly:true,compare:[],lastResults:[]});
   try{localStorage.removeItem(LS_KEY);}catch(e){}
   $$("#areaGrid .opt").forEach(el=>el.classList.remove("active"));
   $("#amountInput").value=""; $("#amountLabel").textContent="Bitte zuerst einen Einsatzbereich wählen";
   $("#amountUnit").textContent=""; $("#iceRecoNote").style.display="none";
   $("#fCooling").value=""; $("#fBuild").value=""; $("#fMinBin").value=""; $("#fBudget").value=""; $("#fSearch").value="";
   $("#fActiveOnly").checked=true;
-  $$("#checklist input").forEach(el=>el.checked=false);
   clearErr("area"); clearErr("amount");
   syncLoad(); syncIce(); syncCompareUI(); updateSummary();
   $("#resultsWrap").innerHTML="";
