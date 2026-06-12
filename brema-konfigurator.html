@@ -3803,7 +3803,6 @@ function resetAll(){
   $("#amountUnit").textContent=""; $("#iceRecoNote").style.display="none";
   $("#fCooling").value=""; $("#fBuild").value=""; $("#fMinBin").value=""; $("#fBudget").value=""; $("#fSearch").value="";
   $("#fActiveOnly").checked=true;
-  $$("#checklist input").forEach(el=>el.checked=false);
   clearErr("area"); clearErr("amount");
   syncLoad(); syncIce(); syncCompareUI(); updateSummary();
   $("#resultsWrap").innerHTML="";
