@@ -3796,7 +3796,7 @@ function buildReport(){
    ============================================================================ */
 function resetAll(){
   Object.assign(state,{area:"",amount:"",load:"Normal",ice:"auto",cooling:"",build:"",
-    minBin:"",budget:"",search:"",activeOnly:true,checks:{},compare:[],lastResults:[]});
+    minBin:"",budget:"",search:"",activeOnly:true,compare:[],lastResults:[]});
   try{localStorage.removeItem(LS_KEY);}catch(e){}
   $$("#areaGrid .opt").forEach(el=>el.classList.remove("active"));
   $("#amountInput").value=""; $("#amountLabel").textContent="Bitte zuerst einen Einsatzbereich wählen";
