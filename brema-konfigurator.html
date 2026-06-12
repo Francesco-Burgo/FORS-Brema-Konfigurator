@@ -3283,7 +3283,7 @@ function saveState(){
   try{
     const s={area:state.area,amount:state.amount,load:state.load,ice:state.ice,
       cooling:state.cooling,build:state.build,minBin:state.minBin,budget:state.budget,
-      search:state.search,activeOnly:state.activeOnly,checks:state.checks,compare:state.compare};
+      search:state.search,activeOnly:state.activeOnly,compare:state.compare};
     localStorage.setItem(LS_KEY,JSON.stringify(s));
   }catch(e){/* localStorage evtl. blockiert – nicht kritisch */}
 }
