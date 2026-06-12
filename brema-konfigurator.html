@@ -3659,54 +3659,6 @@ function showCompare(){
   $("#cmpModal").classList.add("show");
 }
 
-/* ============================================================================
-   11) ANFRAGE-TEXT
-   ============================================================================ */
-function offenePunkte(){
-  // offene Punkte = Checklisten-Items, die NICHT abgehakt sind
-  const open=CHECK_ITEMS.filter((c,i)=>!state.checks[i]);
-  return open.length?open:["Technische Prüfung vor Angebot durchführen"];
-}
-function buildRequestText(){
-  const demand=calcDemand();
-  const a=AREAS[state.area];
-  const tops=(state.lastResults||[]).filter(x=>x.s.isTop).slice(0,3);
-  const modelle=tops.length?tops.map((x,i)=>`${i+1}. ${x.m.modell} (Art. ${x.m.artikelnummer}) – ${x.m.eisproduktionKg24h||"?"} kg/24h, ${priceExklText(x.m)} exkl.`):["(noch keine Berechnung durchgeführt)"];
-  const budget = state.budget?`max. ${chfFmt.format(parseFloat(state.budget))} exkl. MwSt.`:"offen";
-  const ice = state.ice==="auto"?("Automatisch empfohlen"+(ICE_RECO[state.area]?" ("+ICE_RECO[state.area].join(", ")+")":"")):state.ice;
-  return `Hallo zusammen
-
-Bitte prüft folgende BREMA Empfehlung aus dem Konfigurator:
-
-Kunde:            [bitte ergänzen]
-Kontakt:          [bitte ergänzen]
-Einsatzbereich:   ${state.area||"–"}
-${a?a.sumK:"Menge"}: ${state.amount||"–"} ${a?a.einheit:""}
-Auslastung:       ${state.load} (Reserve ${demand?Math.round(demand.reserve*100):"–"} %)
-Berechneter Eisbedarf:        ${demand?demand.basis+" kg/24h":"–"}
-Empfohlene Maschinenleistung: ${demand?demand.reco+" kg/24h":"–"}
-Gewünschte Eisform:           ${ice}
-Kühlung:          ${state.cooling||"keine Vorgabe"}
-Bauart:           ${state.build||"keine Vorgabe"}
-Budget:           ${budget}
-
-Empfohlene Modelle:
-${modelle.join("\n")}
-
-Offene Punkte:
-${offenePunkte().map(p=>"- "+p).join("\n")}
-
-Bemerkung für Verkauf / Innendienst:
-[bitte ergänzen]
-
-Hinweis: Die Empfehlung ersetzt keine technische Prüfung vor Angebotserstellung.
-
-Freundliche Grüsse`;
-}
-function openRequest(){
-  $("#reqText").value=buildRequestText();
-  $("#reqModal").classList.add("show");
-}
 
 /* ============================================================================
    12) ZUSAMMENFASSUNG + BERICHT + DRUCKEN
