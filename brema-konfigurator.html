@@ -3333,7 +3333,6 @@ function buildUI(){
   $("#btnReport").addEventListener("click",openReport);
   $("#btnShowCompare").addEventListener("click",showCompare);
   $("#btnClearCompare").addEventListener("click",clearCompare);
-  $("#btnReqCopy").addEventListener("click",()=>copyText($("#reqText").value));
   $$("[data-close]").forEach(b=>b.addEventListener("click",closeModals));
   $$(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)closeModals();}));
 }
