@@ -3318,12 +3318,6 @@ function buildUI(){
     <div class="opt" data-ice="${o.value}"><span class="ico">${o.ico}</span>${escapeHtml(o.label)}</div>`).join("");
   ig.querySelectorAll(".opt").forEach(el=>el.addEventListener("click",()=>{state.ice=el.dataset.ice;syncIce();updateSummary();saveState();}));
 
-  // Checkliste
-  const cl=$("#checklist");
-  cl.innerHTML = CHECK_ITEMS.map((c,i)=>`
-    <label><input type="checkbox" data-check="${i}"> <span>${escapeHtml(c)}</span></label>`).join("");
-  cl.querySelectorAll("input").forEach(el=>el.addEventListener("change",()=>{state.checks[el.dataset.check]=el.checked;saveState();}));
-
   // Inputs
   $("#amountInput").addEventListener("input",e=>{state.amount=e.target.value;clearErr("amount");updateSummary();saveState();});
   $("#fCooling").addEventListener("change",e=>{state.cooling=e.target.value;updateSummary();saveState();});
